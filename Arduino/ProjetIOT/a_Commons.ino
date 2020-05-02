@@ -28,6 +28,7 @@
 //const char *textTitle20 = "AGRD Deluxe Edition";
 const char *textTitle = "AGRD Deluxe";
 
+
 const char *textMainWifi    = "WIFI";
 const char *textMainSensor  = "Sensors";
 const char *textMainAlarm   = "Alarm";
@@ -39,14 +40,23 @@ const char *textWifiDisconnect = "Disconnect";
 //const char *textWifiWPS = "WPS";
 // Memory stuff
 
+
 const char *textSensorsStatus = "Status";
 
-const char *textAlarmToggle = "Toggle";
+
+const char *textAlarmToggle    = "Toggle";
+const char *textAlarmTresholds = "TRESHOLDS";
+
 const char *textAlarmHumidity = "Humidity";
 const char *textAlarmGaz = "Gaz";
 const char *textAlarmCO = "CO";
 const char *textAlarmNO2 = "NO2";
 
+
 const char *textPartSettings = "Settings";
 const char *textPartValue = "Value";
 //#define *textPartAlarm *textPartSettings
+
+const char *textErrorTitle = "ERROR !!!";
+const char *textErrorMenu = "Unknown Menu";
+const char *textErrorMenuDepth = "Unknown Menu Depth";

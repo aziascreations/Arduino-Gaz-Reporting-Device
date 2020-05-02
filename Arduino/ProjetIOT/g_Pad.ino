@@ -10,6 +10,16 @@
 
 byte buttonLastState = 0;
 
+boolean initPad(void) {
+  pinMode(PIN_DIGI_PAD_LATCH, OUTPUT);
+  pinMode(PIN_DIGI_PAD_CLOCK, OUTPUT);
+  pinMode(PIN_DIGI_PAD_DATA, INPUT);
+  
+  buttonLastState = 0;
+  
+  return true;
+}
+
 byte getButtonChanges() {
   byte currentButtonState = 0;
   byte buttonChanges = 0;
@@ -19,33 +29,6 @@ byte getButtonChanges() {
   digitalWrite(PIN_DIGI_PAD_LATCH, LOW);
 
   currentButtonState = shiftIn(PIN_DIGI_PAD_DATA, PIN_DIGI_PAD_CLOCK, LSBFIRST);
-
-  // Ce morceau de code est géré par le module pour le menu.
-  /*if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_TOP)) {
-    Serial.println("> Top");
-  }
-  
-  if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_LEFT)) {
-    Serial.println("> Left");
-    
-  }
-  if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_CENTER)) {
-    Serial.println("> Select");
-    //initLCD();
-    //updateLCDContent(null, null, textMainLogging, null);
-  }
-  if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_RIGHT)) {
-    Serial.println("> Right");
-  }
-  if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_BOTTOM)) {
-    Serial.println("> Down");
-  }
-  if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_ACTIONL)) {
-    Serial.println("> Back");
-  }
-  if(isButtonNewlyPressed(currentButtonState, buttonLastState, PAD_MASK_ACTIONR)) {
-    Serial.println("> Forward");
-  }/**/
 
   // Ne retourne une valeur != 0 lors du relachement du boutton !
   //buttonChanges = (~(currentButtonState & buttonLastState) & currentButtonState);
