@@ -1,12 +1,23 @@
 
 // Masks
+#define PAD_MASK         0b01111111
+#define PAD_MASK_LEFT    0b01000000
+#define PAD_MASK_TOP     0b00100000
+#define PAD_MASK_BOTTOM  0b00010000
+#define PAD_MASK_CENTER  0b00001000
+#define PAD_MASK_RIGHT   0b00000100
+#define PAD_MASK_ACTIONR 0b00000010
+#define PAD_MASK_ACTIONL 0b00000001
+
 
 // Macros
 // Le mask doit être inversé comme: 1 == boutton non pressé.
 #define isButtonNewlyPressed(currentButtonState, buttonLastState, buttonMask) ((~currentButtonState & buttonMask) && (buttonLastState & buttonMask))
 
+
 // Cause des problèmes lors du démarrage !
 //#define isButtonNewlyReleased(currentButtonState, buttonLastState, buttonMask) ((currentButtonState & buttonMask) && (~buttonLastState & buttonMask))
+
 
 byte buttonLastState = 0;
 

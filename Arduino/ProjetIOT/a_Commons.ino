@@ -12,18 +12,7 @@
 #define PIN_ANAL_HUNIDITY 5
 
 
-// Pad Masks
-#define PAD_MASK         0b01111111
-#define PAD_MASK_LEFT    0b01000000
-#define PAD_MASK_TOP     0b00100000
-#define PAD_MASK_BOTTOM  0b00010000
-#define PAD_MASK_CENTER  0b00001000
-#define PAD_MASK_RIGHT   0b00000100
-#define PAD_MASK_ACTIONR 0b00000010
-#define PAD_MASK_ACTIONL 0b00000001
-
-
-// String constants
+/*// String constants
 //const char[] = "aze";
 //const char *textTitle20 = "AGRD Deluxe Edition";
 const char *textTitle = "AGRD Deluxe";
@@ -59,4 +48,4 @@ const char *textPartValue = "Value";
 
 const char *textErrorTitle = "ERROR !!!";
 const char *textErrorMenu = "Unknown Menu";
-const char *textErrorMenuDepth = "Unknown Menu Depth";
+const char *textErrorMenuDepth = "Unknown Menu Depth";/**/
