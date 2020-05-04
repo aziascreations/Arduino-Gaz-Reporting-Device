@@ -7,6 +7,7 @@ void setup() {
   Serial.begin(9600);
   
   // Préparation des "modules"...
+  initSDCard();
   initSensors();
   initConfig();
   initLogger();

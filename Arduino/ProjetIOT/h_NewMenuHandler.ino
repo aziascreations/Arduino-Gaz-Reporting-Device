@@ -14,8 +14,10 @@ const char *textWifiSave       = "Save WIFI Config";
 
 const char *textSensorCheck = "Check Sensors";
 
+const char *textLogsInfo    = "SD Info";
 const char *textLogsEnable  = "Enable Logging";
 const char *textLogsDisable = "Disable Logging";
+const char *textLogsRestart = "Restart Logging";
 
 const char *textWifiSelectAP   = "Choose an AP:";
 const char *textWifiSelectPW   = "Password:";
@@ -36,10 +38,15 @@ const char *textLogsEnabledAlready  = "Already enabled !";
 const char *textLogsDisabledAlready = "Already disabled !";
 const char *textLogsDone            = "Done !";
 
+const char *textSDType1   = "SD1";
+const char *textSDType2   = "SD2";
+const char *textSDTypeHC  = "SDHC";
+const char *textSDTypeUNK = "Unknown";
+
 const int menuStrings[] = {
   textWifiStatus, textWifiConnect, textWifiDisconnect,
-  textWifiLoad, textWifiSave, textSensorCheck, textLogsEnable,
-  textLogsDisable
+  textWifiLoad, textWifiSave, textSensorCheck, textLogsInfo, 
+  textLogsEnable, textLogsDisable, textLogsRestart
 };
 
 
@@ -53,11 +60,11 @@ enum MenuStates{
 
 enum MenuSections{
   MSE_wifiStatus, MSE_wifiConnect, MSE_wifiDisconnect, MSE_wifiLoad, MSE_wifiSave, MSE_sensorCheck,
-  MSE_logsEnable, MSE_logsDisable
+  MSE_logsInfo, MSE_logsEnable, MSE_logsDisable, MSE_logsRestart
 };
 
 // A sizeof() didn't work :/
-#define menuSectionCount 8
+#define menuSectionCount 10
 
 
 /*

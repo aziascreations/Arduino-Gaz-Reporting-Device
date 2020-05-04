@@ -16,6 +16,9 @@ void loop() {
   // Vérifie si 10+ secs se sont écoulées pour mettre à jours les lectures.
   if(abs(millis() - lastSensorLoopMillis) > DELAY_LOOP_SENSORS) {
     updateSensorReadings();
+
+    // Les vérifications sont faites dans la fonction apellée.
+    logSensorValues();
   }
   
   // Pause de 25ms
