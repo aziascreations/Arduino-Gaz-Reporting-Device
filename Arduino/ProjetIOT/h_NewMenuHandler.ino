@@ -24,8 +24,8 @@ const char *textWifiSelectPW   = "Password:";
 const char *textWifiConnecting = "Connecting...";
 const char *textWifiScanning   = "> Scanning...";
 const char *textWifiNothing    = "> No network !";
-const char *textWifiSuccess    = "Success !";
-const char *textWifiFailure    = "Failure !";
+const char *textWifiSuccess    = "Success !    ";
+const char *textWifiFailure    = "Failure !    ";
 
 const char *textErrorMain = "An error occured !";
 const char *textErrorSub  = "Press any button";
@@ -135,10 +135,10 @@ boolean processMenuActions(byte buttonMask) {
   if(buttonMask & PAD_MASK_TOP) {
     switch(currentMenuState) {
       case MST_selectingEntry:
-        Serial.println("Move up in select");
+        //Serial.println("Move up in select");
         if(currentMenuLine > 0) {
           currentMenuLine--;
-          Serial.println("upped !");
+          //Serial.println("upped !");
           isScreenDirty = true;
         }
       break;
@@ -160,21 +160,26 @@ boolean processMenuActions(byte buttonMask) {
   if(buttonMask & PAD_MASK_BOTTOM) {
     switch(currentMenuState) {
       case MST_selectingEntry:
-        Serial.println("Move down in select");
+        //Serial.println("Move down in select");
+        
         switch(currentMenuSection) {
           case MSE_wifiConnect:
-            Serial.println("in connect !");
+            //Serial.println("in connect !");
+            
             while(i<ESP_SSID_COUNT_MAX && ssidNameBuffer[i][0] != 0) {
               i++;
             }
-            Serial.println(i);
-            Serial.println(currentMenuLine);
+            
+            //Serial.println(i);
+            //Serial.println(currentMenuLine);
+            
             if(currentMenuLine < i) {
               currentMenuLine++;
-              Serial.println("downed !");
+              //Serial.println("downed !");
               isScreenDirty = true;
             }
-            Serial.println("end");
+            
+            //Serial.println("end");
           break;
         }
       break;
@@ -262,7 +267,7 @@ boolean processMenuActions(byte buttonMask) {
                 updateLCDContent(null, null, textWifiConnectAlready, null, 20, false);
               } else {
                 updateLCDContent(null, null, textWifiScanning, null, 20, false);
-                // TODO: Scan shit
+                // TODO: Scan APs
                 if(true) {
                   currentMenuLine = 0;
                   currentMenuSection = MSE_wifiConnect;
@@ -316,11 +321,32 @@ boolean processMenuActions(byte buttonMask) {
         switch(currentMenuSection) {
           case MSE_wifiConnect:
             selectedSSID = currentMenuLine;
+            currentMenuLine = 0;
             currentMenuState = MST_enteringPassword;
             clearWifiPasswordBuffer();
             enableLCDUnderline();
             isScreenDirty = true;
           break;
+        }
+      break;
+
+      case MST_enteringPassword:
+        if(MST_sectionBrowsing == MSE_wifiConnect) {
+          currentMenuState = MST_sectionBrowsing;
+
+          disableLCDUnderline();
+          refreshMenuScreen();
+          updateLCDContent(null, null, textWifiConnecting, null, 20, false);
+          
+          if(connectESPToAP(selectedSSID)) {
+            updateLCDContent(null, null, textWifiSuccess, null, 20, false);
+          } else {
+            updateLCDContent(null, null, textWifiFailure, null, 20, false);
+          }
+          currentMenuLine = 0;
+          
+          // Il est rafraichi manuellement dans les IFs.
+          //isScreenDirty = false;
         }
       break;
       
@@ -349,7 +375,7 @@ void refreshMenuScreen() {
       switch(currentMenuSection) {
         case MSE_wifiConnect:
           // TODO: add cursor !
-          updateLCDContent("aaa", "bbc", "ccd", "nique ta race", 20);
+          updateLCDContent("aaa", "bbc", "ccd", "ddd", 20);
           if(currentMenuLine < 4) {
             moveCursor(currentMenuLine + 1, 18);
           } else {

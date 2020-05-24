@@ -58,3 +58,4 @@ Board/MainSchematic.brd
 *.zip
 Board/CamOutputs
 ginit.bat
+flash/esp_flasher

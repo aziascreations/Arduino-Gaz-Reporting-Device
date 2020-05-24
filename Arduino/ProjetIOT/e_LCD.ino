@@ -3,7 +3,11 @@
 #define PIN_DIGI_595_CLOCK 9
 
 #define PIN_DIGI_LCD_ENABLE 2
-#define PIN_DIGI_LCD_REGISTER 10
+
+// https://www.arduino.cc/reference/en/language/functions/digital-io/digitalwrite/
+//#define PIN_DIGI_LCD_REGISTER 10
+#define PIN_ANAL_LCD_REGISTER A4
+
 
 #define DELAY_LCD 1
 
@@ -31,7 +35,8 @@ boolean initLCD(void) {
   pinMode(PIN_DIGI_LCD_ENABLE, OUTPUT);
   digitalWrite(PIN_DIGI_LCD_ENABLE, LOW);
 
-  pinMode(PIN_DIGI_LCD_REGISTER, OUTPUT);
+  //pinMode(PIN_DIGI_LCD_REGISTER, OUTPUT);
+  pinMode(PIN_ANAL_LCD_REGISTER, OUTPUT);
 
   startLCD();
   clearLCD();
@@ -53,11 +58,20 @@ void pushLcdByteIntoLCD(byte value, byte registerValue) {
 
   // Pour le LSB
   //value = ((value >> 1) | ((value & 0b00000001) << 7));
+
+  /*if(registerValue = HIGH) {
+    registerValue = 255;
+  } else {
+    registerValue = 0;
+  }/**/
+
+  //Serial.println(registerValue);
   
   value = (value << 1) | ((value & 0b10000000) >> 7);
 
   // Première écriture
-  digitalWrite(PIN_DIGI_LCD_REGISTER, registerValue);
+  //digitalWrite(PIN_DIGI_LCD_REGISTER, registerValue);
+  digitalWrite(PIN_ANAL_LCD_REGISTER, registerValue);
   shiftOut(PIN_DIGI_595_DATA, PIN_DIGI_595_CLOCK, MSBFIRST, value);
 
   // Delay (TMP)
@@ -65,7 +79,8 @@ void pushLcdByteIntoLCD(byte value, byte registerValue) {
   //while (millis() - lastMillis <= DELAY_LCD);
 
   // Deuxième écriture
-  digitalWrite(PIN_DIGI_LCD_REGISTER, registerValue);
+  //digitalWrite(PIN_DIGI_LCD_REGISTER, registerValue);
+  digitalWrite(PIN_ANAL_LCD_REGISTER, registerValue);
   shiftOut(PIN_DIGI_595_DATA, PIN_DIGI_595_CLOCK, MSBFIRST, value);
 
   // Delay (TMP)

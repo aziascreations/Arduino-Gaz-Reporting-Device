@@ -4,7 +4,8 @@ unsigned long lastSensorLoopMillis = 0;
 
 void setup() {
   // Préparation du système
-  Serial.begin(9600);
+  // TMP, voir esp init.
+  //Serial.begin(9600);
   
   // Préparation des "modules"...
   initSDCard();
@@ -12,7 +13,13 @@ void setup() {
   initConfig();
   initLogger();
   initLCD();
-  initESP();
+  
+  if(!initESP(true)) {
+    tone(PIN_BUZZER, 200);
+    delay(1000);
+    noTone(PIN_BUZZER);
+  }
+  
   initPad();
   
   initMenu();
@@ -20,7 +27,7 @@ void setup() {
   
   // Préparation des pins (A enlever d'ici !!!)
   pinMode(PIN_BUZZER, OUTPUT);
-
+  
   lastCoreLoopMillis = 0;
   lastSensorLoopMillis = 0;
 }
