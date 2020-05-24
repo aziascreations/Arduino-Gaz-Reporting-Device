@@ -47,10 +47,6 @@ boolean initLCD(void) {
   return true;
 }
 
-/*void testLCD(void) {
-  //updateLCDContent(textWifiStatus, textWifiConnect, textAlarmNO2, textAlarmHumidity, 20);
-}/**/
-
 // J'ai du modifier cette fonction car le signal ne passe pas completement en un coup apparement.
 // Et car j'ai décalé tout les bits d'un cran (01234567 -> 12345670)
 void pushLcdByteIntoLCD(byte value, byte registerValue) {
@@ -58,14 +54,6 @@ void pushLcdByteIntoLCD(byte value, byte registerValue) {
 
   // Pour le LSB
   //value = ((value >> 1) | ((value & 0b00000001) << 7));
-
-  /*if(registerValue = HIGH) {
-    registerValue = 255;
-  } else {
-    registerValue = 0;
-  }/**/
-
-  //Serial.println(registerValue);
   
   value = (value << 1) | ((value & 0b10000000) >> 7);
 
@@ -74,18 +62,10 @@ void pushLcdByteIntoLCD(byte value, byte registerValue) {
   digitalWrite(PIN_ANAL_LCD_REGISTER, registerValue);
   shiftOut(PIN_DIGI_595_DATA, PIN_DIGI_595_CLOCK, MSBFIRST, value);
 
-  // Delay (TMP)
-  //lastMillis = millis();
-  //while (millis() - lastMillis <= DELAY_LCD);
-
   // Deuxième écriture
   //digitalWrite(PIN_DIGI_LCD_REGISTER, registerValue);
   digitalWrite(PIN_ANAL_LCD_REGISTER, registerValue);
   shiftOut(PIN_DIGI_595_DATA, PIN_DIGI_595_CLOCK, MSBFIRST, value);
-
-  // Delay (TMP)
-  //lastMillis = millis();
-  //while (millis() - lastMillis <= DELAY_LCD);
 
   // Ecriture dans l'écran
   digitalWrite(PIN_DIGI_LCD_ENABLE, HIGH);
@@ -134,50 +114,24 @@ boolean updateLCDContent(const char *pLine1, const char *pLine2, const char *pLi
   }
   
   if(pLine1) {
-    //Serial.println(String(pLine1));
     pushLcdByteIntoLCD(LCD_START_LINE1, LOW);
     printLCDLine(pLine1, maxStringLength);
-  } else {
-    //Serial.println("-");
-    /*for(i=0; i<20; i++) {
-      moveLCDCursorRight();
-    }/**/
   }
   
   if(pLine2) {
-    //Serial.println(String(pLine2));
     pushLcdByteIntoLCD(LCD_START_LINE2, LOW);
     printLCDLine(pLine2, maxStringLength);
-  } else {
-    //Serial.println("-");
-    /*for(i=0; i<20; i++) {
-      moveLCDCursorRight();
-    }/**/
   }
   
   if(pLine3) {
-    //Serial.println(String(pLine3));
     pushLcdByteIntoLCD(LCD_START_LINE3, LOW);
     printLCDLine(pLine3, maxStringLength);
-  } else {
-    //Serial.println("-");
-    /*for(i=0; i<20; i++) {
-      moveLCDCursorRight();
-    }/**/
   }
   
   if(pLine4) {
-    //Serial.println(String(pLine4));
     pushLcdByteIntoLCD(LCD_START_LINE4, LOW);
     printLCDLine(pLine4, maxStringLength);
-  } else {
-    //Serial.println("-");
-    /*for(i=0; i<20; i++) {
-      moveLCDCursorRight();
-    }/**/
   }
-
-  //Serial.println("----------");
 
   return true;
 }

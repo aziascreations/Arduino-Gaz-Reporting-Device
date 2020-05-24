@@ -340,6 +340,7 @@ boolean processMenuActions(byte buttonMask) {
           
           if(connectESPToAP(selectedSSID)) {
             updateLCDContent(null, null, textWifiSuccess, null, 20, false);
+            currentESPState = ESPState_Connected;
           } else {
             updateLCDContent(null, null, textWifiFailure, null, 20, false);
           }
@@ -374,11 +375,12 @@ void refreshMenuScreen() {
     case MST_selectingEntry:
       switch(currentMenuSection) {
         case MSE_wifiConnect:
-          // TODO: add cursor !
-          updateLCDContent("aaa", "bbc", "ccd", "ddd", 20);
           if(currentMenuLine < 4) {
+            updateLCDContent(ssidNameBuffer[currentMenuLine-4], ssidNameBuffer[currentMenuLine-3],
+                             ssidNameBuffer[currentMenuLine-2], ssidNameBuffer[currentMenuLine-1], 20);
             moveCursor(currentMenuLine + 1, 18);
           } else {
+            updateLCDContent(ssidNameBuffer[0], ssidNameBuffer[1], ssidNameBuffer[2], ssidNameBuffer[3], 20);
             moveCursor(4, 18);
           }
           pushLcdByteIntoLCD(' ', HIGH);

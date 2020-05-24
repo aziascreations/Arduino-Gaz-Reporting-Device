@@ -43,7 +43,6 @@ enum ESPState {
   ESPEvent_None, ESPEvent_Connected, ESPEvent_Disconnected, ESPEvent_Reseted
 };/**/
 
-
 char ssidNameBuffer[ESP_SSID_COUNT_MAX][ESP_SSID_LEN_MAX];
 char ssidPassBuffer[ESP_PASS_LEN_MAX];
  
@@ -58,7 +57,10 @@ boolean initESP(boolean isDebugModeEnabled) {
   isESPWorking = false;
   currentIPAddress = 0x00000000;
 
-  // TODO: De-init
+  if(!currentESPState == ESPState_Unknown) {
+    disconnectESPFromAP(false);
+  }
+  
   currentESPState = ESPState_Unknown;
   
   if(isDebugModeEnabled) {
@@ -73,7 +75,7 @@ boolean initESP(boolean isDebugModeEnabled) {
     unsigned long lastSerialLoopMillis = millis();
 
     while(!Serial) { // && abs(millis() - (lastSerialLoopMillis + 10000)))
-      // Waiting 
+      // Waiting (TODO: Remove and restore the previous condition !!!)
     }
 
     if(!Serial) {
@@ -110,7 +112,10 @@ boolean isESPConnected() {
 
 boolean disconnectESPFromAP(boolean bypassATMessage) {
   if(isESPWorking && currentESPState == ESPState_Connected) {
-    // IDK;
+    sendESPCommand("AT+CWQAP", 5000);
+    currentESPState = ESPState_Disconnected;
+    currentIPAddress = 0x00000000;
+    return true;
   }
 
   if(isESPWorking && bypassATMessage) {
@@ -126,24 +131,26 @@ boolean connectESPToAP(byte APId) {
   byte i=0;
   
   if(isESPWorking && currentESPState == ESPState_Disconnected) {
-    String ESPQuery = "AT+CON AP=";
-
+    //String ESPQuery = "AT+CON AP=";
+    String ESPQuery = " AT+ CWJAP=\"";
+    
     while(ssidNameBuffer[APId][i] != 0) {
       ESPQuery.concat(ssidNameBuffer[APId][i]);
       i++;
     }
 
-    ESPQuery.concat(" PWD=");
+    ESPQuery.concat("\",\"");
 
     i = 0;
     while(ssidPassBuffer[i] != ' ') {
       ESPQuery.concat(ssidPassBuffer[i]);
       i++;
     }
+    ESPQuery.concat("\"");
     
     String ESPResponse = sendESPCommand(ESPQuery, 5000);
 
-    // TODO: Check if error or not and return boolean according to that.
+    return ESPResponse.indexOf("OK");
   }
   
   return false;
@@ -175,8 +182,10 @@ boolean populateSSIDList(boolean isDebugModeEnabled) {
 
     return true;
   } else {
+    //String ESPResponse = sendESPCommand("AT+CWLAP", 5000);
     // Do checks and scan.
     //isDebugModeEnabled
+    
   }
 
   return false;

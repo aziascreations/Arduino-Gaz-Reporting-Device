@@ -23,11 +23,13 @@ void initSensors() {
 }
 
 boolean updateSensorReadings() {
-  // Le DHT22 ne fonctionne pas, même avec les exemples disponible sur arduino.cc
+  // Le DHT22 ne fonctionne pas, même avec les exemples disponible sur arduino.cc avec un nano sur son breadboard.
   //humidity = dht.readHumidity();
   //temperature = dht.readTemperature();
   humidity = -1.0F;
   temperature = -1.0F;
+
+  //TODO: Get data from gaz sensor.
   
   lastSensorTransaction++;
 }
