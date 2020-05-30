@@ -82,9 +82,23 @@ boolean initESP(boolean isDebugModeEnabled) {
       return false;
     }
 
+    // Reset
     sendESPCommand("AT+RST\r\n", 2000);
+
+    // Station mode (client)
     sendESPCommand("AT+CWMODE=1\r\n", 2000);
 
+    // Single connection
+    sendESPCommand("AT+CIPMUX=0\r\n", 2000);
+
+    // Create server on port 333 (default port)
+    sendESPCommand("AT+CIPSERVER=1\r\n", 2000);
+
+    // Garde les données TCP dans un buffer interne (~3kB)
+    sendESPCommand("AT+CIPRECVMODE=1\r\n", 1000);
+    
+    // Je sais plus pq j'ai mis ce morceau là
+    // Reste d'un placeholder ?
     String finalESPResponse = sendESPCommand("AT\r\n", 1000);
 
     if(finalESPResponse.indexOf("OK") > 0) {
@@ -99,6 +113,50 @@ boolean initESP(boolean isDebugModeEnabled) {
 
 // TODO: Add delta or current millis and delta for it.
 boolean updateESP() {
+  //https://www.espressif.com/sites/default/files/documentation/4a-esp8266_at_instruction_set_en.pdf
+  //5.2.26
+
+  boolean hasDataLeft = false;
+  
+  do {
+    // On récupère un max de 64 bytes du buffer interne.
+    String ESPResponse = sendESPCommand("AT+CIPRECVDATA=64\r\n", 1000);
+
+    int lengthPosStart = ESPResponse.indexOf(':');
+    if(lengthPosStart == -1) {
+      hasDataLeft = false;
+      break;
+    }
+    
+    int lengthPosEnd = ESPResponse.indexOf(',', lengthPosStart + 1);
+    if(lengthPosEnd < lengthPosStart) {
+      hasDataLeft = false;
+      break;
+    }
+
+    int dataLength = ESPResponse.substring(lengthPosStart + 1, lengthPosEnd).toInt();
+
+    if(dataLength == 64) {
+      // On ne lis pas les paquets de plus de 4 bytes (query package)
+      hasDataLeft = true;
+    } else {
+      hasDataLeft = false;
+    }
+
+    if(!hasDataLeft && dataLength==4) {
+      // Je ne sais pas sous quel format les données sont retournées.
+      // Le documentation oficielle ne le précise pas.
+      
+      sendESPCommand("AT+CIPSEND="+((4*4)+3+2), 500);
+      Serial.print(getHumidity(), 2);
+      Serial.print(getTemperature(), 2);
+      Serial.print(getCarbonMonoxyde(), 2);
+      Serial.print(getNO2(), 2);
+      if(sendESPCommand("\r\n", 1000) == "SEND OK") {
+        // Envoie réussi
+      }
+    }
+  } while(hasDataLeft);
   
 }
 
@@ -112,7 +170,7 @@ boolean isESPConnected() {
 
 boolean disconnectESPFromAP(boolean bypassATMessage) {
   if(isESPWorking && currentESPState == ESPState_Connected) {
-    sendESPCommand("AT+CWQAP", 5000);
+    sendESPCommand("AT+CWQAP\r\n", 5000);
     currentESPState = ESPState_Disconnected;
     currentIPAddress = 0x00000000;
     return true;
@@ -146,7 +204,7 @@ boolean connectESPToAP(byte APId) {
       ESPQuery.concat(ssidPassBuffer[i]);
       i++;
     }
-    ESPQuery.concat("\"");
+    ESPQuery.concat("\"\r\n");
     
     String ESPResponse = sendESPCommand(ESPQuery, 5000);
 
@@ -185,7 +243,8 @@ boolean populateSSIDList(boolean isDebugModeEnabled) {
     //String ESPResponse = sendESPCommand("AT+CWLAP", 5000);
     // Do checks and scan.
     //isDebugModeEnabled
-    
+
+    // Je ne sais pas quel genre de données sont retournées pour le moment...
   }
 
   return false;
