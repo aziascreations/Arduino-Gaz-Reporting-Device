@@ -31,6 +31,7 @@ const char *textErrorMain = "An error occured !";
 const char *textErrorSub  = "Press any button";
 
 const char *textWifiConnectAlready    = "> Already connected";
+const char *textWifiConnected         = "> Connected";
 const char *textWifiDisconnectAlready = "> Not connected";
 const char *textWifiNotReady          = "> Not ready !";
 
@@ -45,7 +46,7 @@ const char *textSDTypeUNK = "Unknown";
 
 const int menuStrings[] = {
   textWifiStatus, textWifiConnect, textWifiDisconnect,
-  textWifiLoad, textWifiSave, textSensorCheck, textLogsInfo, 
+  /*textWifiLoad, textWifiSave, textSensorCheck,*/ textLogsInfo, 
   textLogsEnable, textLogsDisable, textLogsRestart
 };
 
@@ -59,12 +60,12 @@ enum MenuStates{
 };
 
 enum MenuSections{
-  MSE_wifiStatus, MSE_wifiConnect, MSE_wifiDisconnect, MSE_wifiLoad, MSE_wifiSave, MSE_sensorCheck,
+  MSE_wifiStatus, MSE_wifiConnect, MSE_wifiDisconnect, /*MSE_wifiLoad, MSE_wifiSave, MSE_sensorCheck,*/
   MSE_logsInfo, MSE_logsEnable, MSE_logsDisable, MSE_logsRestart
 };
 
 // A sizeof() didn't work :/
-#define menuSectionCount 10
+#define menuSectionCount 7
 
 
 /*
@@ -257,7 +258,15 @@ boolean processMenuActions(byte buttonMask) {
         //MSE_wifiStatus, MSE_wifiConnect, MSE_wifiDisconnect, MSE_wifiLoad, MSE_wifiSave, MSE_sensorCheck
         switch(currentMenuSection) {
           case MSE_wifiStatus:
-          
+            if(isESPReady()) {
+              if(isESPConnected()) {
+                updateLCDContent(null, null, textWifiConnected, null, 20, false);
+              } else {
+                updateLCDContent(null, null, textWifiDisconnectAlready, null, 20, false);
+              }
+            } else {
+              updateLCDContent(null, null, textWifiNotReady, null, 20, false);
+            }
           break;
 
           // Si on peut, on ouvre le menu de selection du wifi.
@@ -285,6 +294,10 @@ boolean processMenuActions(byte buttonMask) {
           case MSE_wifiDisconnect:
             updateLCDContent(null, null, textWifiDisconnectAlready, null, 20, false);
           break;
+
+          case MSE_logsInfo:
+            // Infos.
+          break;
           
           case MSE_logsEnable:
             if(isLoggingEnabled) {
@@ -307,6 +320,20 @@ boolean processMenuActions(byte buttonMask) {
               }
             } else {
               updateLCDContent(null, null, textLogsDisabledAlready, null, 20, false);
+            }
+          break;
+
+          case MSE_logsRestart:
+            if(isLoggingEnabled) {
+              if(disableLogger()) {
+                if(enableLogger()) {
+                  updateLCDContent(null, null, textLogsDone, null, 20, false);
+                } else {
+                  updateLCDContent(null, null, textWifiFailure, null, 20, false);
+                }
+              } else {
+                updateLCDContent(null, null, textWifiFailure, null, 20, false);
+              }
             }
           break;
           

@@ -20,7 +20,11 @@ void setup() {
   
   if(!initESP(true)) {
     tone(PIN_BUZZER, 200);
-    delay(1000);
+    
+    //delay(1000);
+    unsigned long lastMillis = millis();
+    while(abs(millis() - lastMillis) <= 1000);
+    
     noTone(PIN_BUZZER);
   }
   

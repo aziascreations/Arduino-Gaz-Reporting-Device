@@ -17,9 +17,16 @@ float gazNO2 = 0.30F;
 //#define SENSOR_DHT_TYPE     DHT22
 //DHT dht(PIN_DIGI_SENSOR_DHT, SENSOR_DHT_TYPE);
 
+#define PIN_ANAL_CO  A1
+#define PIN_ANAL_NH3 A2
+#define PIN_ANAL_NO2 A3
+
 void initSensors() {
   lastSensorTransaction = 0;
   lastReadSensorTransaction = 0;
+
+  pinMode(PIN_ANAL_CO, INPUT);
+  pinMode(PIN_ANAL_NO2, INPUT);
 }
 
 boolean updateSensorReadings() {
@@ -29,7 +36,8 @@ boolean updateSensorReadings() {
   humidity = -1.0F;
   temperature = -1.0F;
 
-  //TODO: Get data from gaz sensor.
+  gazCO = map(analogRead(PIN_ANAL_CO), 0, 1023, 0.0F, 1.0F);
+  gazNO2 = map(analogRead(PIN_ANAL_NO2), 0, 1023, 0.0F, 1.0F);
   
   lastSensorTransaction++;
 }

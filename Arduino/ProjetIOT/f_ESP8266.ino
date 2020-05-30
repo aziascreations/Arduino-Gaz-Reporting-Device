@@ -74,8 +74,8 @@ boolean initESP(boolean isDebugModeEnabled) {
     // Declared here to avoid scoping issues.
     unsigned long lastSerialLoopMillis = millis();
 
-    while(!Serial) { // && abs(millis() - (lastSerialLoopMillis + 10000)))
-      // Waiting (TODO: Remove and restore the previous condition !!!)
+    while(!Serial && abs(millis() - (lastSerialLoopMillis + 2500))) {
+      // On attends...
     }
 
     if(!Serial) {
@@ -83,16 +83,16 @@ boolean initESP(boolean isDebugModeEnabled) {
     }
 
     // Reset
-    sendESPCommand("AT+RST\r\n", 2000);
+    sendESPCommand("AT+RST\r\n", 1000);
 
     // Station mode (client)
-    sendESPCommand("AT+CWMODE=1\r\n", 2000);
+    sendESPCommand("AT+CWMODE=1\r\n", 1000);
 
     // Single connection
-    sendESPCommand("AT+CIPMUX=0\r\n", 2000);
+    sendESPCommand("AT+CIPMUX=0\r\n", 1000);
 
     // Create server on port 333 (default port)
-    sendESPCommand("AT+CIPSERVER=1\r\n", 2000);
+    sendESPCommand("AT+CIPSERVER=1\r\n", 1000);
 
     // Garde les données TCP dans un buffer interne (~3kB)
     sendESPCommand("AT+CIPRECVMODE=1\r\n", 1000);
